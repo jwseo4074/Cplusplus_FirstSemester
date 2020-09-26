@@ -1,0 +1,222 @@
+#include <iostream>
+using namespace std;
+
+class Matrix {
+	int** values;
+	int row, column;
+public:
+	Matrix(const int r = 0, const int c = 0)
+	{
+		row = r;
+		column = c;
+
+		values = new int* [r];
+		for (int i = 0; i < r; i++)
+			values[i] = new int[c];
+	}
+	Matrix(const Matrix& m)
+	{
+		this->row = m.row;
+		this->column = m.column;
+
+		values = new int* [row];
+		for (int i = 0; i < row; i++)
+		{
+			for (int j = 0; j < column; j++)
+				values[i] = new int[j];
+		}
+
+		for (int i = 0; i < m.row; i++)
+		{
+			for (int j = 0; j < m.column; j++)
+				values[i][j] = m.values[i][j];
+		}
+	}
+
+	Matrix operator + (const Matrix& m)
+	{
+		for (int i = 0; i < m.row; i++)
+		{
+			for (int j = 0; j < m.column; j++)
+				values[i][j] += m.values[i][j];
+		}
+		return *this;
+	}
+
+	Matrix operator = (const Matrix& m)
+	{
+		for (int i = 0; i < m.row; i++)
+		{
+			for (int j = 0; j < m.column; j++)
+				values[i][j] = m.values[i][j];
+		}
+		return *this;
+	}
+
+	friend istream& operator >>(istream& is, const Matrix& m);
+	friend ostream& operator <<(ostream& os, const Matrix& m);
+	friend Matrix operator *(const Matrix m1, const Matrix m2);
+
+	~Matrix()
+	{
+		delete[] values;
+	}
+};
+
+Matrix operator *(const Matrix m1, const Matrix m2)
+{
+	for (int i = 0; i < m1.row; i++)
+	{
+		for (int j = 0; j < m1.column; j++)
+			m1.values[i][j] *= m2.values[i][j];
+	}
+	return m1;
+}
+istream& operator >>(istream& is, const Matrix& m)
+{
+	for (int i = 0; i < m.row; i++)
+	{
+		for (int j = 0; j < m.column; j++)
+			is >> m.values[i][j];
+	}
+	return is;
+}
+ostream& operator <<(ostream& os, const Matrix& m)
+{
+	os << m.values[0][0] << '\t';
+	os << m.values[0][1] << endl;
+	os << m.values[1][0] << '\t';
+	os << m.values[1][1] << endl;
+
+	return os;
+}
+
+int main() {
+	Matrix m1(2, 2), m2(2, 2);
+	cin >> m1;
+	cin >> m2;
+	Matrix m3(m1 + m2);
+	Matrix m4(2, 2);
+	m4 = m3 * 10;
+	cout << m3 << endl << m4 << endl;
+}
+
+
+
+
+=================================================================================
+
+
+#include <iostream>
+using namespace std;
+
+class Matrix
+{
+    int** value ;                
+    int row, column;             
+
+    public:
+    Matrix(const int r = 0, const int c = 0)
+    {
+        this -> row = r;
+        this -> column = c;
+
+        value = new int*[r];
+        for (int i=0 ; i<r ; i++)
+            value[i] = new int[c];                   
+    }
+
+    Matrix(const Matrix& m)
+    {
+        this -> row = m.row;
+        this -> column = m.column;
+
+        value = new int*[row];
+        for (int i=0 ; i<row ; i++)
+        {
+            for (int j=0; j<column ; j++)
+                value[i] = new int[j];
+        }                              
+
+        for (int i=0 ; i<m.row ; i++)
+        {
+            for (int j=0; j<m.column ; j++)
+                value[i][j] = m.value[i][j];                          
+        }
+    }
+
+    Matrix& operator + (const Matrix& m) 
+    {
+        for (int i = 0; i < m.row; i++) 
+        {
+            for (int j = 0; j < m.column; j++) 
+                value[i][j] += m.value[i][j];
+        }
+        return *this; 
+    }
+
+    Matrix* operator = (const Matrix& m) 
+    {
+        for (int i = 0; i < m.row; i++) 
+        {
+            for (int j = 0; j < m.column; j++) 
+                value[i][j] = m.value[i][j];
+        }
+        return this;
+    }
+    
+    friend istream& operator >> (istream& is, const Matrix& m);
+    friend ostream& operator << (ostream& os, const Matrix& m);
+    friend Matrix operator * (const Matrix m, const int x);
+
+    ~Matrix() 
+    {
+        delete [] value;
+    }
+};
+
+Matrix operator * (const Matrix m, const int x) 
+{
+    for (int i = 0; i < m.row; i++) 
+    {
+        for (int j = 0; j < m.column; j++) 
+            m.value[i][j] = m.value[i][j] * x;
+    }
+    return m;
+}                              //10을 클래스로 받는게 안됨
+
+istream& operator >> (istream& is, const Matrix& m) 
+{
+    for (int i = 0; i < m.row; i++) 
+    {
+        for (int j = 0; j < m.column; j++) 
+            is >> m.value[i][j];
+    }
+}
+
+ostream& operator << (ostream& os, const Matrix& m) 
+{
+    for (int i = 0; i < m.row; i++) 
+    {
+        for (int j = 0; j < m.column; j++) 
+            os << m.value[i][j] << "      ";
+        os << endl;
+    }
+    return os;
+}
+
+int main()
+{
+    Matrix m1(2,2), m2(2,2);
+    cin >> m1 ;
+    cin >> m2 ;
+
+    Matrix m3(m1+m2);
+    Matrix m4(2,2);
+
+    m4 = m3 * 10 ;
+
+    cout << m3 << endl << m4 << endl;
+}
+
+

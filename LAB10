@@ -1,0 +1,172 @@
+#include <iostream>
+using namespace std;
+
+class Student_Info	{
+	string name;
+	string number;
+public:
+	Student_Info(string input_name, string input_number)
+		:name(input_name), number(input_number)	{}
+	Student_Info() : Student_Info("what's your name? ", "what's your number? ")   {}
+/*===================================================================
+
+생성자에서 다른 생성자를 호출하는 것을 위임 생성자 또는
+Constructor delegation 라고 한다.
+		===================================================================*/
+
+	string getname()		{
+		cout << "이름 : ";
+		return name;
+	}
+	string getnumber()	{
+		cout << "전화번호 : ";
+		return number;
+	}
+};
+
+class Number_Int	{
+	int int_a;
+public:
+	Number_Int(int a)
+		:int_a(a)		{}
+	int getint()	{
+		return int_a;
+	}
+};
+
+class Number_Double : public Number_Int	{
+public:
+	using Number_Int::Number_Int;
+
+
+
+	/*=================================================================
+
+	using 을 통해 상위 클래스의 생성자를 사용하겠다고 지정
+	이때부터 상위 클래스로부터의 생성자가 상속이 된다.
+
+	=================================================================*/
+	Number_Double() : Number_Int(0)
+	{}
+};
+
+int main()	{
+	cout << "< Constructor delegation 예제 >" << endl;
+	cout << "" << endl;
+
+	Student_Info i;
+	Student_Info s("서지원  (값을 넣어준 후) ", "010-4074-0000  (값을 넣어준 후) ");
+	cout << i.getname() << endl;
+	cout << i.getnumber() << endl;
+	cout << "=> Constructor delegation 을 통한 초기화 " << endl;
+	cout << "" << endl;
+
+	cout << s.getname() << endl;
+	cout << s.getnumber() << endl;
+	cout << "" << endl;
+
+	cout << "< Constructor inheritance 예제 >" << endl;
+	cout << "" << endl;
+
+	Number_Double N_D;
+	cout << N_D.getint() << endl;
+	cout << "=> Number_Int 의 생성자를 통한 초기화" << endl;
+	cout << "" << endl;
+/*===========================================================================
+
+Constructor inheritance 하기 이전일 때
+Number_Double N_D_2(10);
+=> 적절하지 않은 호출 : 에러 발생
+Number_Double 의 생성자 중에는 int 값 하나를 매개변수로 받는 생성자가
+존재하지 않기 때문이다. 이것을 해결하기 위해서 상속 생성자
+Constructor inheritance 를 이용한다.
+line 48 참조
+	==============================================================================*/
+
+	Number_Double N_D_2(10);
+	cout << N_D_2.getint() << endl;
+	cout << "=> Constructor inheritance 를 통해 하위 클래스에서 상위 클래스의 생성자 	이용 가능 " << endl;
+}
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+class Student	{
+public:
+	virtual void Print_F()	{
+		cout << "I am Student" << endl;
+	}
+	void Not_Virtual_F()	{}
+};
+
+
+
+class Man final : public Student	{
+	void Print_F() override	{
+		cout << "I am Male Student" << endl;
+	}
+
+
+	/*=======================================================================
+
+	void Not_Virtual_F() final;
+	=> 에러 발생
+	=> a 함수가 virtual 로 선언되지 않았으므로 final 이 될수 없다.
+
+	=> about " Virtual function override "
+
+	=======================================================================*/
+};
+
+class Woman : public Student	{
+	void Print_F() final	{
+		cout << "I am Female Student" << endl;
+	}
+};
+/*=======================================================================
+
+class Anyone_Woman1 : public Woman	{
+	void Print_F() override {}
+};
+=> 에러 발생
+=> Woman 클래스에서 Print_F() 함수가 final 로 정의 되었으므로
+하위 클래스에서 재정의 할 수 없다.
+
+=> about " Final virtual function “
+
+=======================================================================*/
+
+/*=======================================================================
+
+class Anyone_Woman2 : public Woman {};
+=> 에러 발생
+=> Woman 클래스가 final 로 이미 정의 되었으므로 더 이상 사용 불가하다.
+
+=> about " Final class "
+
+=======================================================================*/
+
+int main()	{
+	vector <Student*> vec_student;
+	Student* pMan = new Man;
+	Student* pWoman = new Woman;
+
+	vec_student.push_back(pMan);
+	vec_student.push_back(pWoman);
+
+	vec_student[0]->Print_F();
+	vec_student[1]->Print_F();
+
+	/*========================================================================
+
+	Student(부모 클래스) 라는 성질을 갖는 2개의 객체 포인터를
+	vector에 담아서 같은 함수를 호출 하지만 결과가 다름을 알수있다.
+	각각의 객체(자식 클래스)는 부모의 가상 함수를 오버라이딩하여,
+	재정의함에 따라 상속받은 자식 클래스의 가상 함수가
+	호출되는 것을 알 수 있다.
+
+	=> about " Virtual function override "
+
+	========================================================================*/
+}

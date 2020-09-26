@@ -1,0 +1,184 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+enum MajorType { CE, EE, ME, UD };
+
+class Major {
+private:
+	MajorType majorType;
+public:
+	void settingmajor(MajorType maj)	{
+		majorType = maj;
+	}
+	MajorType gettermajor()		{
+		return majorType;
+	}
+};
+
+class Student {
+private:
+	string name = "";
+	float gpa = 0.0;
+	Major major;
+public:
+	string getname()	{
+		return name;
+	}
+	float getgpa()		{
+		return gpa;
+	}
+	void getmajor()		{
+		major.gettermajor();
+	}
+	void setName(string set_name)		{
+		name = set_name;
+	}
+	void setMajor(MajorType set_major)		{
+		major.settingmajor(set_major);
+	}
+	void setGPA(float set_gpa)		{
+		gpa = set_gpa;
+	}
+	
+	void print_major()		{
+		MajorType m = major.gettermajor();
+		switch (m)	{
+		case CE:
+			cout << " Major: Computer Eng.";
+			break;
+		case EE:
+			cout << " Major: Electrical Eng.";
+			break;
+		case ME:
+			cout << " Major: Mechanical Eng.";
+			break;
+		case UD:
+			cout << " Major: ";
+			break;
+		}
+	}
+};
+
+class School {
+private:
+	string schoolName;
+	vector<Student> students;
+	int num = 0;
+public:
+	School(string schoolname)		{
+		schoolName = schoolname;
+	}
+	Student* addStudent(string add_name, float add_gpa)		{
+		Student s;
+		s.setName(add_name);
+		s.setGPA(add_gpa);
+		students.push_back(s);
+		num++;
+		return &students.back();
+	}
+	
+Student* addStudent(string add_name, MajorType add_major)		{
+		Student s;
+		s.setName(add_name);
+		s.setMajor(add_major);
+		students.push_back(s);
+		num++;
+		return &students.back();
+	}
+	void print()		{
+		vector <Student>::iterator it;
+		cout << "School Name: " << schoolName << ", Count: " << num << endl;
+		for (it = students.begin(); it != students.end(); it++)		{
+			cout << '\t' << "Name: " << it->getname() << " GPA :" << it->getgpa();
+			it->print_major();
+			cout << endl;
+		}
+	}
+	/*void sort() {
+		int a = 0;
+		int b = 0;
+		vector <Student>::iterator it1, it2;
+		for (it1 = students.begin(); it1 != students.end() - 1; it1++) {
+			b = a + 1;
+			for (it2 = students.begin() + 1; it2 != students.end(); it2++) {
+				if (it1->getgpa() < it2->getgpa()) {
+					Student temp;
+					temp = students[a];
+					students[a] = students[b];
+					students[b] = temp;
+				}
+				b++;
+			}
+			a++;
+		}
+	}         왜 안되는지 몰라 .... */
+	void sort()		{
+		for (int i = 0; i < students.size() - 1; i++)		{
+			for (int j = i + 1; j < students.size(); j++)		{
+				if (students[i].getgpa() < students[j].getgpa())	{
+					Student temp = students[i];
+					students[i] = students[j];
+					students[j] = temp;
+				}
+			}
+		}
+	}
+};
+
+int main() {
+	School pnu("PNU");
+	Student* kim = pnu.addStudent("Kim", EE);
+	kim->setGPA(3.5F);
+	Student* hong = pnu.addStudent("Hong", CE);
+	hong->setGPA(4.3F);
+	Student* lee = pnu.addStudent("Lee", 4.0F);
+	lee->setMajor(CE);
+	Student* joo = pnu.addStudent("Joo", 1.5F);
+	joo->setMajor(ME);
+	pnu.print();
+	pnu.sort();
+	pnu.print();
+}
+
+/*
+print 에서 이렇게 안하고
+School 클래스 안에
+
+ void print()	{
+		cout << "School Name: " << schoolname << ", Count: "<< students.size() << endl;
+		for(int i=0;i<students.size();i++)	{
+			students[i].print123();
+		}
+		cout << endl;
+ }	해주고
+Student 클래스 안에
+
+ void print123()	{
+		cout << "Name: " << name ;
+		cout << " GPA: " << gpa ;
+		major.print_major();
+ }	해주고
+ Major 클래스 안에
+
+ void print_major()		{
+			switch(majortype)	{
+				case CE :
+					cout << " Major: Computer Eng.";
+					break;
+				case EE :
+					cout << " Major: Electrical Eng.";
+					break;
+				case ME :
+					cout << " Major: Mechanical Eng.";
+					break;
+				case UD :
+					cout << " Major: ";
+					break;
+			}
+			cout << endl;
+ }		이렇게 해줘도 됨.
+*/
+
+
+

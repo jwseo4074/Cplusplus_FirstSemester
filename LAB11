@@ -1,0 +1,143 @@
+#include <iostream>
+using namespace std;
+
+class Complex {
+private:
+	float real, imaginary;
+public:
+	Complex()	{
+		real = 0.0;
+		imaginary = 0.0;
+	}
+	Complex(const float input_real, const float input_imaginary)	{
+		real = input_real;
+		imaginary = input_imaginary;
+	}
+	bool operator ==(const Complex& C)	{
+		return C.real == real && C.imaginary == imaginary;
+	}
+	friend ostream& operator <<(ostream& os, const Complex& C);
+};
+
+class MyString {
+private:
+	char* str;
+public:
+	MyString()	{
+		str = NULL;
+	}
+	MyString(const char* input_str)	{
+		str = new char[strlen(input_str)+1];
+		for (int i = 0; i < strlen(input_str)+1; i++)		{
+			// +1 을 왜 해줘야 함 ?
+			str[i] = input_str[i];
+		}
+	}
+	bool operator ==(const MyString& S)	{
+		for (int i = 0; i < strlen(S.str); i++)	{
+			if (str[i] != S.str[i])
+				return 0;
+		}
+		return 1;
+	}
+
+	friend ostream& operator <<(ostream& os, const MyString& S);
+};
+
+int a = 0;
+
+template <class T, int sz>
+
+class List {
+	T items[sz];
+	int nTop ;
+public :
+	List()	{
+		nTop = 0;
+	}
+	void add(T t)	{
+		cout << t << " is added" << endl;
+		items[nTop++] = t;
+		if (nTop == 2)
+			cout << "" << endl;
+	}
+	void find(T t)	{
+		int x = 0;
+		for (int i = 0; i < nTop; i++)	{
+			if (items[i] == t)	{
+				x++;
+		// x 이용 안하고 그냥 cout << t << " is found" << endl; 해주고
+				// return ; 해도 함수 나가짐 !!
+			}
+		}
+		if (x == 1)
+			cout << t << " is found" << endl;
+		else 
+			cout << t << " is not found" << endl;
+	}
+
+
+	void remove(T t)		{
+		int x = 0;
+		for (int i = 0; i < nTop; i++)	{
+			if (items[i] == t)	{
+				x++;
+				for (int j = i; j < nTop - 1; j++)
+					items[j] = items[j + 1];
+				nTop -= 1;
+			// x 이용 안하고 그냥 cout << t << " is found" << endl; 해주고
+				// return ; 해도 함수 나가짐 !!
+			}
+		}
+		if (x == 1)	{
+			cout << t << " is removed" << endl;
+			a++;
+			if (a == 2)
+				cout << "" << endl;
+		}
+		else
+			cout << t << " is not removed" << endl;
+		
+	}
+
+	List& operator =(const List& copy_list)	{
+		for (int i = 0; i < copy_list.nTop ; i++)	{
+			items[i] = copy_list.items[i];
+		}
+		return *this;
+	}
+};
+
+ostream& operator <<(ostream& os, const Complex& C)	{
+	os << C.real << "," << C.imaginary;
+	return os;
+}
+
+ostream& operator <<(ostream& os, const MyString& S)	{
+	os << S.str;
+	return os;
+}
+
+
+int main() {
+	List<Complex, 100> cList;
+	List<MyString, 200> sList;
+
+	cList.add(Complex(0, 0));
+	cList.add(Complex(1, 1));
+	sList.add("abc");
+	sList.add("def");
+
+	cList.find(Complex(1, 0));
+	sList.find("def");
+
+	cList.remove(Complex(0, 0));
+	sList.remove("abc");
+
+	List<MyString, 200> s2List(sList);
+	List<MyString, 200> s3List;
+
+	s3List.add("123");
+	s3List = s2List;
+	s3List.remove("def");
+}

@@ -1,0 +1,65 @@
+#include <iostream>
+#include <string.h>
+#include <stdio.h>
+using namespace std;
+
+int main()   
+{
+	cout << "Enter the score count: ";
+	int maxSize ;
+	cin >> maxSize;
+
+	int* const scores = new int[maxSize];
+    	for (int j = 0; j < maxSize; j++)
+        scores[j] = 0;
+   	int i = 0;
+   	float sum = 0;
+    	float average = 0;
+	while (1) {
+	   string input_str;
+           cout << "Enter command: (add,sum,average,quit)";
+	   in >> input_str;
+	   for (int k = 0; k < input_str.size(); k++)
+			input_str[k] = toupper(input_str[k]);
+		 if (input_str == "ADD")   
+		 {
+		     if (i < maxSize)   
+		     {
+                		cout << "Enter score: " ;
+			int input_num = 0;
+			cin >> input_num;
+			if (input_num < 100 && input_num > 0)   
+			{
+				scores[i] = input_num;
+                    		sum = sum + scores[i];
+                    		cout << "   " << scores[i] << " added" << endl;
+                    		i++;	
+			}
+			else
+				cout << "Scores should be between 0 and 100" << endl;
+	             }
+                     else
+                     	cout << "Too many scores" << endl;
+		 }
+
+        		if (input_str == "SUM")	
+		{
+            		cout << "   Sum: "<< sum << endl;   
+		}
+
+        		if (input_str == "AVERAGE")
+       		{
+            		average = sum / i;
+            		cout << "   Average :" << average << endl;    
+		}
+
+        		if (input_str == "QUIT")
+        		{
+            		delete[] scores;
+            		cout << "Bye" << endl;
+            		break;
+        		}
+
+	}
+    	return 0;
+}

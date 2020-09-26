@@ -1,0 +1,150 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+enum Color { RED, BLUE, YELLOW };
+class Point {
+	int point_x;
+	int point_y;
+
+public :
+	Point(int input_x =0, int input_y = 0)
+	{
+		point_x = input_x;
+		point_y = input_y;
+	}
+	void print_point() const
+	{
+		cout << "(" << point_x << "," << point_y << ")";
+	}
+	int get_x() const
+	{
+		return point_x;
+	}
+	int get_y() const 
+	{
+		return point_y;
+	}
+};
+class Shape {
+	Color lineColor;
+public:
+	Color getLineColor() const { return lineColor; }
+	virtual Shape* clone() const = 0;
+	virtual void print() const = 0;
+	virtual float getLength() const = 0;
+};
+
+class ClosedShape : public Shape{
+public:
+	virtual Shape* clone() const = 0;
+	virtual void print() const = 0;
+	virtual float getLength() const = 0;
+};
+
+class Polygon : public ClosedShape {
+public:
+	virtual Shape* clone() const = 0;
+	virtual void print() const = 0;
+	virtual float getLength() const = 0;
+};
+
+class Rectangle : public Polygon {
+	Point p1, p2, p3, p4;
+public :
+	Rectangle(const Point& p_1, const Point& p_2, const Point& p_3, const Point& p_4)
+	{
+		p1 = p_1;
+		p2 = p_2;
+		p3 = p_3;
+		p4 = p_4;
+	}
+	Shape* clone() const {
+		Shape* new_rec = new Rectangle(p1,p2,p3,p4);
+		return new_rec;
+	}
+
+	void print() const
+	{
+		cout << "Rectangle: ";
+		p1.print_point();
+		p2.print_point();
+		p3.print_point();
+		p4.print_point();
+		cout << endl;
+		/* private 에서 Point p[4] 로 정의 해준다음 
+		초기화 p[0] = p1,p[1] = p2 ~~~  해주고 
+		print 함수에서 for 문 돌리고 p[i].print_point() 도 가능 !! */
+	}
+
+	float getLength() const
+	{
+		float a = (p3.get_x() - p1.get_x()) * (p3.get_y() - p2.get_y());
+		return a;
+	}
+
+};
+class Triangle : public Polygon {
+	Point p1, p2, p3;
+public:
+	Triangle(const Point& p_1, const Point& p_2, const Point& p_3)
+	{
+		p1 = p_1;
+		p2 = p_2;
+		p3 = p_3;
+	}
+	Shape* clone() const
+	{
+		Shape* new_tri = new Triangle(p1, p2, p3);
+		return new_tri;
+	}
+	void print() const
+	{
+		cout << "Triangle: ";
+		p1.print_point();
+		p2.print_point();
+		p3.print_point();
+		cout << endl;
+	}
+	float getLength() const
+	{
+		float a = (p3.get_x() - p1.get_x()) * p2.get_y() / 2;
+		return a;
+	}
+
+};
+
+class ShapeList {
+	vector <Shape*> vec_sha;
+public:
+	void addShape(Shape* s1)
+	{
+		vec_sha.push_back(s1->clone());
+	}
+	void print()
+	{
+		for (int i = 0; i < vec_sha.size(); i++)
+			vec_sha[i]->print();
+	}
+	float getTotalArea()
+	{
+		float total_area = 0;
+		for (int i = 0; i < vec_sha.size(); i++)
+		{
+			total_area += vec_sha[i]->getLength();
+		}
+		return total_area;
+	}
+};
+int main() {
+	Point p1(0, 0), p2(0, 10), p3(20, 20), p4(20, 30);
+	Shape* const r = new Rectangle(p1, p2, p3, p4);
+	Shape* const t = new Triangle(p1, p2, p3);
+	ShapeList list{};
+	list.addShape(r);
+	list.addShape(t);
+	delete r;
+	delete t;
+	list.print();
+	cout << list.getTotalArea() << endl;
+}

@@ -1,0 +1,118 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+class Student {
+private:
+	string name ="";
+	float gpa = 0.0;
+public:
+	void getName(string get_name)	{
+		name = get_name;
+	}
+	void getGpa(float get_gpa)	{
+		gpa = get_gpa;
+	}
+	float getterGpa()	{
+		return gpa;
+	}
+	string getterName()	{
+		return name;
+	}
+	void setGPA(float set_gpa)	{
+		gpa = set_gpa;
+	}
+	void setName(string set_name)	{
+		name = set_name;
+	}
+};
+
+class School {
+private:
+	string schoolName;
+	vector<Student> students;
+	int s_num = 0;
+public:
+	School(string str_n)	{
+		schoolName = str_n;
+	}
+	
+
+
+
+
+	void addStudent(string input_name, float input_score = 0.0)	{
+		Student s;
+		s.getName(input_name);
+		s.getGpa(input_score);
+		students.push_back(s);
+		s_num++;
+	}
+	void print()	{
+		vector <Student>::iterator it;
+		cout << "School Name: " << schoolName << ", Count: " << s_num  << endl;
+		for (it = students.begin(); it != students.end(); it++)		{
+//cout << i << '\t' << students[i].getterName() << '\t' << students[i].getterGpa() << endl;
+			//두개 다 가능 !! 
+			cout << "	Name: " << it->getterName() << "	GPA: " << it->getterGpa() << endl;
+		}
+	}
+	Student& findStudentWithName(string find_name)		{
+		vector <Student>::iterator it;
+		for (it = students.begin(); it != students.end(); it++)		{
+			if (it->getterName() == find_name)	{
+				return *it;
+			}
+		}
+		cout << "Error" << endl;
+	}
+	
+
+void sort()	{
+		int a = 0;
+		int b = 0;
+		vector <Student>::iterator it1, it2;
+		for (it1 = students.begin(); it1 != students.end()-1; it1++)	{
+			b = a + 1;
+			for (it2 = students.begin()+1; it2 != students.end(); it2++)	{
+				if (it1->getterGpa() < it2->getterGpa())	{
+					Student temp;
+					temp = students[a];
+					students[a] = students[b];
+					students[b] = temp;
+				}
+				b++;
+			}
+			a++;
+		}
+	}
+
+};
+
+
+int main() {
+	School pnu("PNU");
+	pnu.addStudent("Kim", 2.7F);
+	pnu.addStudent("Hong", 3.5F);
+	pnu.addStudent("Lee");
+	pnu.addStudent("Joo", 1.5F);
+	pnu.print();
+	pnu.sort(); // descending
+	pnu.print();
+	School knu("KNU");
+	knu.addStudent("Seo", 2.5F);
+	knu.addStudent("Lee", 3.8F);
+	knu.print();
+	Student& lee = pnu.findStudentWithName("Lee");
+	lee.setGPA(3.3F);
+	lee.setName("Yoon");
+	pnu.print();
+	knu.addStudent("Hong", 4.3F);
+	Student& hong = knu.findStudentWithName("Hong");
+	hong.setGPA(3.3F);
+	hong.setName("Joon");
+	knu.print();
+}
+
+
+

@@ -1,0 +1,64 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+const int SUBJECT_NO = 3;
+
+struct StudentInfo 
+{
+	string name;
+    	int scores[SUBJECT_NO] = { 0 };
+	int sum = 0;
+	float average = 0;
+};
+
+void print_st(const StudentInfo& vec_it, const int n, int i)
+{
+    cout << i + 1 << "    ";
+    cout << vec_it.name << "    ";
+    for (int subject = 0; subject < n; subject++)
+        cout << vec_it.scores[subject] << "     ";
+    cout << vec_it.sum << "     " << vec_it.average << endl;
+}
+
+int main()
+{
+	int p_num;
+	cin >> p_num;
+
+	vector <StudentInfo> s_vec;
+	StudentInfo s;
+
+	for (int i = 0; i < p_num; i++)
+	{
+		cin >> s.name;
+        		for (int subject = 0; subject < SUBJECT_NO; subject++)
+        		{
+           		 cin >> s.scores[subject];
+        		}
+        		s.sum = s.scores[0] + s.scores[1] + s.scores[2];
+        		s.average = float(s.sum) / SUBJECT_NO;
+
+        		s_vec.push_back(s);
+	}
+
+
+    vector<StudentInfo>::iterator vec_it;
+    int i = 0;
+    for (vec_it = s_vec.begin(); vec_it != s_vec.end(); vec_it++)
+    {
+        print_st(*vec_it, SUBJECT_NO, i);
+        i++;
+    }
+    int sum0 = 0;
+    int sum1 = 0;
+    int sum2 = 0;
+
+    for (int j=0;j<p_num;j++)
+    {
+        sum0 = sum0 + s_vec[j].scores[0];
+        sum1 = sum1 + s_vec[j].scores[1];
+        sum2 = sum2 + s_vec[j].scores[2];
+    }
+    cout << "Total" << "      " << sum0 << "    " << sum1 << "      " << sum2 << "      " << sum0 + sum1 + sum2;	
+}

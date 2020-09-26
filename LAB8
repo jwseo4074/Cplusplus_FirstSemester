@@ -1,0 +1,62 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+enum EmployeeLevel { 사원, 대리, 과장, 차장, 부장 };
+
+class Employee 	{
+	string name;
+	const EmployeeLevel level;
+public:
+	Employee(string input_name, EmployeeLevel input_level)
+		:level(input_level)		{
+		name = input_name;
+	}
+	
+	string gettername() const		{
+		return name;
+	}
+	
+	EmployeeLevel getterlevel() const		{
+		return level;
+	}
+	friend ostream& operator << (ostream& os, const Employee& emp);
+};
+
+class Manager : public Employee {
+	vector<Employee*> group;
+public:
+	Manager(string man_name, EmployeeLevel man_emp)
+		:Employee(man_name,man_emp)	{}
+	void addEmployee(Employee* class_emp)	{
+		group.push_back(class_emp);
+	}
+
+	friend ostream& operator << (ostream& os, const Manager& man);
+};
+
+ostream& operator << (ostream& os, const Employee& emp)	{
+	os << emp.level << "\t" << emp.name << endl;
+	return os;
+}
+
+
+
+ostream& operator << (ostream& os, const Manager& man)	{
+	os << man.getterlevel()<< "\t" << man.gettername() << endl;
+	cout << "List of employees managed by me" << endl;
+	
+	for (int i = 0; i < man.group.size(); i++)
+		os << man.group[i]->getterlevel() << '\t' << man.group[i]->gettername() 		<< endl;
+	return os;
+}
+
+int main() {
+	Employee e1("홍", 사원), e2("김", 대리), e3("차", 사원);
+	cout << e1 << e2 << e3;
+	Manager m1("Tom", 차장);
+	m1.addEmployee(&e1);
+	m1.addEmployee(&e2);
+	m1.addEmployee(&e3);
+	cout << endl << "Information for Manager" << endl;
+	cout << m1;
+}
